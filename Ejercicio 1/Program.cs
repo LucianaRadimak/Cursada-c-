@@ -41,15 +41,22 @@
             mensaje += "\n3. Contar vocales";
             mensaje += "\n4. Contar consonantes";
             mensaje += "\n5 Remplazar caracteres";
-            mensaje += "\n";
-
+            mensaje += "\n6 Convertir texto a entero";
+            mensaje += "\n7 Guardar string en SB";
+            mensaje += "\n8 Guardar párrafo en SB";
+            mensaje += "\n9 Mostrar mensaje y texto";
+            mensaje += "\n10 Mostrar texto";
             while (continuar)
             {
                 do
                 {
                    Console.WriteLine(mensaje);
                     metodoSolicitado = Console.ReadLine();
-                } while (metodoSolicitado != "1" && metodoSolicitado != "2" && metodoSolicitado != "3" && metodoSolicitado != "4" && metodoSolicitado != "5");
+                } while (metodoSolicitado != "1" && metodoSolicitado != "2" && 
+                            metodoSolicitado != "3" && metodoSolicitado != "4" && 
+                            metodoSolicitado != "5" && metodoSolicitado != "6" && 
+                            metodoSolicitado != "7" && metodoSolicitado != "8" &&
+                            metodoSolicitado != "9" && metodoSolicitado != "10");
                 switch (metodoSolicitado)
                 {
                     case "1":
@@ -99,7 +106,42 @@
                         nuevoTexto =  TextOperations.ReemplazarCaracter(textoRecibido, char.Parse(caracterExistente) , char.Parse(caracterNuevo));
                         Console.WriteLine($"se ha cambiado \"{textoRecibido}\" a \"{nuevoTexto}\", felicidades!");
                         break;
-
+                    case "6":                        
+                        int numero;
+                        Console.WriteLine("Tratar de convertir a entero: ");                        
+                        textoRecibido = Console.ReadLine();
+                        if (TextOperations.ConvertirStringAEntero(textoRecibido, out numero))
+                        {
+                            Console.WriteLine($"Conversión exitosa. El número resultante es: {numero}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No se pudo convertir el texto a entero.");
+                        }
+                        break;
+                    case "7":                        
+                        Console.WriteLine("Texto a guardar: ");
+                        textoRecibido = Console.ReadLine();
+                        Console.WriteLine(TextOperations.ConvertirStringASB(textoRecibido)); 
+                        break;
+                    case "8":
+                        Console.WriteLine("Párrafo a guardar: ");
+                        textoRecibido = Console.ReadLine();
+                        Console.WriteLine(TextOperations.ConvertirParrafoASB(textoRecibido));
+                        break;
+                    case "9":                        
+                        string texto;
+                        Console.WriteLine("Mensaje: ");
+                        textoRecibido = Console.ReadLine();
+                        Console.WriteLine("Texto: ");
+                        texto = Console.ReadLine();
+                        TextOperations.MostrarTexto(textoRecibido, texto);
+                        break;
+                    case "10":                        
+                        Console.WriteLine("Texto: ");
+                        textoRecibido = Console.ReadLine();
+                        TextOperations.MostrarTextoSB(TextOperations.ConvertirParrafoASB(textoRecibido));                       
+                        break;
                 }
                 
                 do

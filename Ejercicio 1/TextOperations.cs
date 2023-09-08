@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -103,17 +104,25 @@ namespace Ejercicio_1
         {
             return palabra.Replace(caracterOriginal, caracterNuevo);
         }
-        
-        //public static bool ConvertirStringAEntero(string texto, out int numeroEntero)
-        //{
-        //    return int.TryParse(texto, out numeroEntero);
-        //}
-
-        public static StringBuilder ConvertirStringASB(string palabra)
+        public static bool ConvertirStringAEntero(string texto, out int numeroEntero)
         {
-            return new StringBuilder(palabra);
+            return int.TryParse(texto, out numeroEntero);
         }
 
+        /// <summary>
+        /// Recibe un string y lo guarda en un StringBuilder.
+        /// </summary>
+        /// <param name="stringRecibido"></param>
+        /// <returns>String Builder</returns>
+        public static StringBuilder ConvertirStringASB(string stringRecibido)
+        {
+            return new StringBuilder(stringRecibido);
+        }
+        /// <summary>
+        /// Recibe un párrafo y guarda cada frase en una línea nueva de un StringBuilder.Cada frase finaliza cuando encontramos un punto (.).
+        /// </summary>
+        /// <param name="parrafo"></param>
+        /// <returns>String Builder</returns>
         public static StringBuilder ConvertirParrafoASB(string parrafo)
         {
             string[] frases = parrafo.Split(".", StringSplitOptions.RemoveEmptyEntries);
@@ -124,15 +133,22 @@ namespace Ejercicio_1
             }
             return sb;
         }
-
+        /// <summary>
+        /// Muestra por consola el mensaje y el texto recibido.
+        /// </summary>
+        /// <param name="mensaje"></param>
+        /// <param name="texto"></param>
         public static void MostrarTexto(string mensaje, string texto)
         {
             Console.WriteLine($"{mensaje}. {texto}");
         }
-
+        /// <summary>
+        /// Muestra por consola el texto recibido.
+        /// </summary>
+        /// <param name="texto"></param>
         public static void MostrarTextoSB(StringBuilder texto)
         {
-            Console.WriteLine(texto.ToString());
+            Console.WriteLine(texto);
         }
     }
         
