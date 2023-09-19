@@ -16,7 +16,7 @@ namespace Billetes
         #region Constructores
         static Euro()
         {
-            cotzRespectoDolar = 1.17;
+            cotzRespectoDolar = 1.0658;
         }
         public Euro(double cantidad)
         {

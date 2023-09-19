@@ -16,7 +16,7 @@ namespace Billetes
         #region Constructores
         static Peso()
         {
-            cotzRespectoDolar = 102.65;
+            cotzRespectoDolar = 349.91837;
         }
         public Peso(double cantidad)
         {

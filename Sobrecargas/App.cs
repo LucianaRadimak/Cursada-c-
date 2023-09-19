@@ -6,20 +6,23 @@ using System.Threading.Tasks;
 
 namespace Sobrecargas
 {
-    public class App
+    internal class App
     {
-        public string nombre;
-        public double size;
-
+        string nombre;
+        double size;        
+        
         public App(string nombre, double size)
         {
-            this.nombre=nombre;
-            this.size=size;
+            this.nombre = nombre;
+            this.size = size;
         }
+        public string Nombre { get => nombre; set => nombre=value; }
+        public double Size { get => size; set => size=value; }
+
         //Sobrecarga del operador explícito para convertir App a string
         public static explicit operator string(App app)
         {
-            return $"{app.nombre} ({app.size} GB)";
+            return $"*{app.nombre} ({app.size} GB)";
         }
 
         // Sobrecarga del operador explícito para convertir App a double

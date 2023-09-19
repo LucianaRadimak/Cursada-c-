@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -16,19 +17,25 @@ namespace Sobrecargas
         double almacenamiento;
         double almacenamientoActual;
         bool encendido;
-        List<string> agenda;
-        List<string> apps;
+        Dictionary<Contacto, DateTime> agenda;
+        List<App> apps;
+        string titular;
+        string numero;
+        Queue<Llamada> llamadasRealizadas;
+        Random random;
         #endregion
 
         #region Constructores
 
         public Celular()
         {
-            this.apps = new List<string>();
-            this.agenda = new List<string>();
+            random = new Random();
+            this.apps = new List<App>();
+            this.llamadasRealizadas = new Queue<Llamada>();
+            this.agenda = new Dictionary<Contacto, DateTime>();
         }
 
-        public Celular(EMarca marca, string modelo, int ram, double almacenamiento):this()
+        public Celular(EMarca marca, string modelo, int ram, double almacenamiento, string titular, string numero):this()
         {
             this.marca = marca;
             this.modelo = modelo;
@@ -36,9 +43,11 @@ namespace Sobrecargas
             this.almacenamiento = almacenamiento;
             this.encendido = false;
             this.almacenamientoActual = almacenamiento;
+            this.titular = titular;
+            this.numero = numero;
         }
 
-        public Celular(EMarca marca, string modelo, int ram, double almacenamiento, List<string> agenda) : this(marca, modelo, ram, almacenamiento)
+        public Celular(EMarca marca, string modelo, int ram, double almacenamiento, string titular, string numero, Dictionary<Contacto, DateTime> agenda) : this(marca, modelo, ram, almacenamiento, titular, numero)
         {
             this.agenda = agenda;
         }
@@ -50,6 +59,7 @@ namespace Sobrecargas
             this.encendido = !this.encendido;
             return this.encendido ? "Encendiendo..." : "Apagando...";
         }
+        
         public void Llamar(string numero)
         {
             if(this.encendido)
@@ -57,6 +67,11 @@ namespace Sobrecargas
                 if(BuscarEnAgenda(numero))
                 {
                     Console.WriteLine($"llamando a {numero}");
+                    int duracionSegundos;
+                    duracionSegundos = random.Next(1, 10000);
+                    Llamada llamadaNueva;
+                    llamadaNueva = new Llamada(DateTime.Now, numero, duracionSegundos);
+                    this.llamadasRealizadas.Enqueue(llamadaNueva);
                 }
                 else
                 {
@@ -68,13 +83,23 @@ namespace Sobrecargas
                 Console.WriteLine("celu apagado");
             }
         }
+        
         public void Llamar(Contacto contacto)
         {
             if (this.encendido)
             {
-                if (BuscarEnAgenda(contacto.numero))
+                if (BuscarEnAgenda(contacto))
                 {
-                    Console.WriteLine($"llamando a {contacto.nombre}");
+                    if((contacto.Nombre).Length > 0)
+                        Console.WriteLine($"llamando a {contacto.Nombre}");
+                    else
+                        Console.WriteLine($"llamando a {contacto.Numero}");
+
+                    int duracionSegundos;
+                    duracionSegundos = random.Next(1, 10000);
+                    Llamada llamadaNueva;
+                    llamadaNueva = new Llamada(DateTime.Now, contacto.Numero, duracionSegundos);
+                    this.llamadasRealizadas.Enqueue(llamadaNueva);
                 }
                 else
                 {
@@ -86,18 +111,29 @@ namespace Sobrecargas
                 Console.WriteLine("celu apagado");
             }
         }
-        private bool BuscarEnAgenda(string numeroIngresado)
+        private bool BuscarEnAgenda(Contacto contacto)
         {
             bool estaEnAgenda;
             estaEnAgenda = false;
-            foreach(string numero in this.agenda)
+            if(agenda.ContainsKey(contacto))
             {
-                if(numero == numeroIngresado)
+                estaEnAgenda = true;                
+            }              
+            return estaEnAgenda;
+        }
+
+        private bool BuscarEnAgenda(string numero)
+        {
+            bool estaEnAgenda;
+            estaEnAgenda = false;
+            foreach (Contacto contacto in agenda.Keys)
+            {
+                if (contacto.Numero == numero)
                 {
                     estaEnAgenda = true;
                     break;
-                }                
-            }
+                }
+            }            
             return estaEnAgenda;
         }
 
@@ -105,11 +141,11 @@ namespace Sobrecargas
         {
             bool exito;
             exito = false;
-            if (this.encendido && this != aplicacion && VerificarEspacio(aplicacion.size))
+            if (this.encendido && this != aplicacion && VerificarEspacio((double)aplicacion))
             {
                 exito = true;
-                this.apps.Add(aplicacion.nombre);
-                this.almacenamientoActual -= aplicacion.size;
+                this.apps.Add(aplicacion);
+                this.almacenamientoActual -= aplicacion.Size;
             }
             //Encendido
             //App no este instalada
@@ -129,20 +165,40 @@ namespace Sobrecargas
             sb.AppendLine($"Marca: {this.marca}");
             sb.AppendLine($"Modelo: {this.modelo}");
             sb.AppendLine($"RAM: {this.ram}");
-            sb.AppendLine($"Almacenamiento: {this.almacenamiento}");            
+            sb.AppendLine($"Almacenamiento: {this.almacenamiento} GB");
+            sb.AppendLine($"Titular: {this.titular}");
+            sb.AppendLine($"Número: {this.numero}");
             if (this.apps.Count > 0)
             {
                 sb.AppendLine("Aplicaciones instaladas");
-                foreach (string aplicacion in apps)
+                foreach (App aplicacion in apps)
                 {
-                    sb.AppendLine($"\t{aplicacion}");
+                    sb.AppendLine((string)aplicacion);
                 }
             }
             else
             {
                 sb.AppendLine("No hay apps instaladas");
             }
-            sb.AppendLine("*******************************************");
+            sb.AppendLine(this.MostrarLlamadasRealizadas());
+            return sb.ToString();
+        }
+
+        private string MostrarLlamadasRealizadas()
+        {
+            StringBuilder sb = new StringBuilder();           
+            if (this.llamadasRealizadas.Count > 0)
+            {
+                sb.AppendLine($"Llamadas realizadas: ");
+                foreach (Llamada llamada in this.llamadasRealizadas)
+                {
+                    sb.AppendLine($"Fecha y hora: {llamada.Fecha}, Destino: {llamada.NumeroDestino}, Duración: {llamada.duracionFormateada()}");
+                }
+            }
+            else
+            {
+                sb.Append("No se encontraron llamadas realizadas.");
+            }
             return sb.ToString();
         }
         #endregion
@@ -152,9 +208,9 @@ namespace Sobrecargas
         {
             bool exito;
             exito = false;
-            foreach (string aplicacion in miCelu.Apps) 
+            foreach (App aplicacion in miCelu.apps) 
             {
-                if (aplicacion == miApp.nombre)
+                if (aplicacion == miApp)
                 {
                     exito = true;
                     break;
@@ -176,11 +232,9 @@ namespace Sobrecargas
 
         #region Propiedades
         public string Modelo { get => modelo; set => modelo = value;}        
-        public int Ram { get => ram; set => ram = value; }
-        public double Almacenamiento { get => almacenamiento; set => almacenamiento = value; }
-        public double AlmacenamientoActual { get => almacenamientoActual; set => almacenamientoActual = value; }
-        public List<string> Agenda { get => agenda; set => agenda = value; }
-        public List<string> Apps { get => apps; set => apps=value; }
+        public string Titular { get => titular; set => titular=value; }
+        public string Numero { get => numero; set => numero=value; }
+        public EMarca Marca { get => marca; set => marca=value; }
         #endregion
     }
 }
