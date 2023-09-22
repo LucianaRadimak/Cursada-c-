@@ -3,12 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>El_viajar_es_un_placer</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\entidades\Entidades.csproj" />
+    <ProjectReference Include="..\Viaje\Viaje.csproj" />
   </ItemGroup>
 
 </Project>

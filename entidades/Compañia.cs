@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sobrecargas
 {
-    internal class Compañia
+    public class Compañia
     {
         string razonSocial;
         DateTime fechaDeApertura;

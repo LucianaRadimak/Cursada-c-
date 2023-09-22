@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sobrecargas
 {
-    internal class Llamada
+    public class Llamada
     {
         DateTime fecha;
         string numeroDestino;

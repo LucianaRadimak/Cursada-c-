@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sobrecargas
 {
-    internal class App
+    public class App
     {
         string nombre;
         double size;        

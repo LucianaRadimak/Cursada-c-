@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sobrecargas
 {
-    internal class Celular
+    public class Celular
     {
         #region Atributos
         EMarca marca;
